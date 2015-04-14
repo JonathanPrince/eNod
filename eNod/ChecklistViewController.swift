@@ -60,6 +60,17 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
         
         dismissViewControllerAnimated(true, completion: nil)
     }
+    
+    func addItemViewController(controller: AddItemViewController, didFinishEditingItem item: ChecklistItem) {
+        if let index = find(items, item) {
+            let indexPath = NSIndexPath(forRow: index, inSection: 0)
+            if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+                configureTextForCell(cell, withChecklistItem: item)
+            }
+        }
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,10 +81,21 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
         if segue.identifier == "AddItem" {
+            
             let navigationController = segue.destinationViewController as! UINavigationController
             let controller = navigationController.topViewController as! AddItemViewController
             controller.delegate = self
+        } else if segue.identifier == "EditItem" {
+            
+            let navigationController = segue.destinationViewController as! UINavigationController
+            let controller = navigationController.topViewController as! AddItemViewController
+            controller.delegate = self
+            
+            if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {
+                controller.itemToEdit = items[indexPath.row]
+            }
         }
     }
 
@@ -121,7 +143,11 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
             label.text = ""
         }
     }
-
+    
+    func configureTextForCell(cell: UITableViewCell, withChecklistItem item: ChecklistItem) {
+        let label = cell.viewWithTag(1000) as! UILabel
+        label.text = item.text
+    }
     
     // remove item 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
