@@ -113,12 +113,15 @@ class ChecklistViewController: UITableViewController, AddItemViewControllerDeleg
     // set/remove checkmark in view
     func configureCheckmarkForCell(cell: UITableViewCell, withChecklistItem item: ChecklistItem) {
         
+        let label = cell.viewWithTag(1001) as! UILabel
+        
         if item.checked {
-            cell.accessoryType = .Checkmark
+            label.text = "✓"
         } else {
-            cell.accessoryType = .None
+            label.text = ""
         }
     }
+
     
     // remove item 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
